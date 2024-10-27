@@ -57,3 +57,56 @@ async function main() {
 }
 
 main();
+
+// fetch
+const baseUrl = 'https://jsonplaceholder.typicode.com';
+const postsEndpoint = '/posts';
+const todosEndpoint = '/todos';
+
+const postsURL = baseUrl + postsEndpoint;
+const todosURL = baseUrl + todosEndpoint;
+
+fetch(postsURL)
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(reason => console.log('error when fetching data: ', reason))
+    .finally(() => console.log('done procesessing request'));
+
+async function processPosts() {
+    const response = await fetch(postsURL);
+    const data = await response.json();
+    console.log('data in async await: ', data);
+
+    const postsContainer = document.querySelector('main');
+
+    for (const post of data) {
+        const postContainer = document.createElement('article');
+        postContainer.innerHTML = `<h3>${post.title}</h3> <p>${post.body}</p>`;
+        postsContainer.appendChild(postContainer);
+    }
+}
+
+processPosts();
+
+async function processTodos() {
+    const response = await fetch(todosURL);
+    const data = await response.json();
+    console.log('data in async await: ', data);
+
+    const todosContainer = document.querySelector('main');
+
+    for (const todo of data) {
+        const todoContainer = document.createElement('article');
+        todoContainer.innerHTML = `<h3>${todo.title}</h3> <input type="checkbox" ${todo.completed ? 'checked' : ''}>`;
+        todosContainer.appendChild(todoContainer);
+    }
+}
+
+processTodos();
+
+async function processData() {
+    await processTodos();
+    await processPosts();
+}
+
+processData();
